@@ -1,0 +1,793 @@
+<!doctype html>
+<html lang="en" data-theme="dark">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>UAP / UFO Release 01 Ranked Brief</title>
+
+  <style>
+    :root {
+      --bg: #f4f1ea;
+      --panel: #ffffff;
+      --panel-2: #f7f5ef;
+      --text: #171717;
+      --muted: #5f625f;
+      --border: #d9d2c4;
+      --accent: #9b6a22;
+      --star: #b7791f;
+      --link-bg: #ece6d8;
+      --link-text: #12355b;
+      --shadow: 0 18px 45px rgba(0, 0, 0, .12);
+    }
+
+    html[data-theme="dark"] {
+      --bg: #090c10;
+      --panel: #121821;
+      --panel-2: #18202b;
+      --text: #f4f1ea;
+      --muted: #aeb6c2;
+      --border: #293241;
+      --accent: #d6a64f;
+      --star: #ffd166;
+      --link-bg: #1d2a3a;
+      --link-text: #b8d7ff;
+      --shadow: 0 18px 45px rgba(0, 0, 0, .35);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      margin: 0;
+      font-family: "Aptos", "Segoe UI", "Source Sans Pro", "Helvetica Neue", Arial, sans-serif;
+      background:
+        radial-gradient(circle at top left, rgba(214, 166, 79, .16), transparent 34rem),
+        linear-gradient(180deg, var(--bg), var(--bg));
+      color: var(--text);
+      line-height: 1.55;
+    }
+
+    .shell {
+      width: min(1180px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 34px 0 60px;
+    }
+
+    header {
+      border: 1px solid var(--border);
+      background: linear-gradient(135deg, var(--panel), var(--panel-2));
+      border-radius: 24px;
+      box-shadow: var(--shadow);
+      padding: 30px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::after {
+      content: "PURSUE";
+      position: absolute;
+      right: -18px;
+      bottom: -42px;
+      font-weight: 800;
+      letter-spacing: .18em;
+      font-size: clamp(54px, 11vw, 128px);
+      color: var(--text);
+      opacity: .035;
+      pointer-events: none;
+    }
+
+    .official-tag {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      border: 1px solid var(--border);
+      background: rgba(128, 128, 128, .08);
+      border-radius: 999px;
+      padding: 8px 12px;
+      font-size: 13px;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      font-weight: 700;
+    }
+
+    .seal-dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 999px;
+      background: var(--accent);
+      box-shadow: 0 0 0 5px rgba(214, 166, 79, .15);
+    }
+
+    h1 {
+      font-family: Georgia, "Times New Roman", serif;
+      font-size: clamp(34px, 6vw, 68px);
+      line-height: 1;
+      margin: 22px 0 14px;
+      letter-spacing: -.04em;
+    }
+
+    .subtitle {
+      max-width: 840px;
+      color: var(--muted);
+      font-size: 18px;
+      margin: 0;
+    }
+
+    .toolbar {
+      display: grid;
+      grid-template-columns: 1.2fr .7fr .7fr auto;
+      gap: 12px;
+      margin: 22px 0;
+      align-items: center;
+    }
+
+    .control,
+    button {
+      border: 1px solid var(--border);
+      color: var(--text);
+      background: var(--panel);
+      border-radius: 14px;
+      padding: 12px 14px;
+      font: inherit;
+      min-height: 48px;
+    }
+
+    input.control,
+    select.control {
+      width: 100%;
+    }
+
+    select.control,
+    button {
+      cursor: pointer;
+    }
+
+    button {
+      font-weight: 800;
+    }
+
+    button:hover,
+    .doc-link:hover {
+      transform: translateY(-1px);
+    }
+
+    .summary-row {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 12px;
+      margin-bottom: 22px;
+    }
+
+    .summary-card {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 18px;
+      padding: 18px;
+    }
+
+    .summary-card span {
+      display: block;
+      color: var(--muted);
+      text-transform: uppercase;
+      font-size: 12px;
+      letter-spacing: .08em;
+      font-weight: 800;
+    }
+
+    .summary-card strong {
+      display: block;
+      margin-top: 4px;
+      font-size: 24px;
+    }
+
+    .case-list {
+      display: grid;
+      gap: 16px;
+    }
+
+    .case-card {
+      border: 1px solid var(--border);
+      background: var(--panel);
+      border-radius: 22px;
+      padding: 22px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, .08);
+    }
+
+    .case-topline {
+      display: flex;
+      justify-content: space-between;
+      gap: 18px;
+      align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      padding-bottom: 16px;
+      margin-bottom: 16px;
+    }
+
+    .eyebrow {
+      color: var(--accent);
+      text-transform: uppercase;
+      letter-spacing: .09em;
+      font-size: 12px;
+      font-weight: 900;
+    }
+
+    h2 {
+      font-family: Georgia, "Times New Roman", serif;
+      margin: 5px 0 0;
+      font-size: clamp(22px, 3vw, 32px);
+      line-height: 1.1;
+    }
+
+    .rating {
+      text-align: right;
+      min-width: 118px;
+    }
+
+    .stars {
+      display: block;
+      color: var(--star);
+      letter-spacing: 1px;
+      font-size: 22px;
+      white-space: nowrap;
+    }
+
+    .rating-label {
+      display: inline-block;
+      margin-top: 5px;
+      color: var(--muted);
+      font-size: 13px;
+      font-weight: 800;
+    }
+
+    .meta-grid {
+      display: grid;
+      grid-template-columns: .7fr 1.3fr;
+      gap: 12px;
+      margin-bottom: 16px;
+    }
+
+    .meta-grid div {
+      background: var(--panel-2);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 14px;
+    }
+
+    .meta-grid span {
+      display: block;
+      color: var(--muted);
+      font-size: 12px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      font-weight: 800;
+      margin-bottom: 4px;
+    }
+
+    .meta-grid strong {
+      font-size: 15px;
+    }
+
+    h3 {
+      margin: 12px 0 6px;
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: .08em;
+      color: var(--muted);
+    }
+
+    ul {
+      margin: 8px 0 0 20px;
+      padding: 0;
+    }
+
+    li {
+      margin: 5px 0;
+    }
+
+    .note {
+      border-left: 3px solid var(--accent);
+      padding-left: 12px;
+      color: var(--muted);
+      margin: 16px 0;
+    }
+
+    .links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-top: 12px;
+    }
+
+    .doc-link {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: var(--link-text);
+      background: var(--link-bg);
+      border: 1px solid var(--border);
+      border-radius: 999px;
+      padding: 8px 11px;
+      font-size: 13px;
+      font-weight: 800;
+      transition: transform .15s ease;
+    }
+
+    .doc-link::after {
+      content: "↗";
+      opacity: .7;
+    }
+
+    .footer-note {
+      color: var(--muted);
+      font-size: 13px;
+      margin-top: 24px;
+      text-align: center;
+    }
+
+    .hidden {
+      display: none !important;
+    }
+
+    @media (max-width: 820px) {
+      .toolbar,
+      .summary-row,
+      .meta-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .case-topline {
+        display: block;
+      }
+
+      .rating {
+        text-align: left;
+        margin-top: 12px;
+      }
+
+      header {
+        padding: 22px;
+      }
+    }
+
+    @media print {
+      body {
+        background: white;
+      }
+
+      .toolbar {
+        display: none;
+      }
+
+      .case-card,
+      header,
+      .summary-card {
+        box-shadow: none;
+        break-inside: avoid;
+      }
+
+      .doc-link {
+        color: #000;
+      }
+    }
+  </style>
+</head>
+
+<body>
+  <main class="shell">
+    <header>
+      <span class="official-tag"><span class="seal-dot"></span> UAP / UFO Release 01 Ranked Brief</span>
+      <h1>WAR.gov UFO Release 01</h1>
+      <p class="subtitle">
+        Ranked by official weight: seniority of referenced officials, agency authority, command-chain handling,
+        trained witness quality, AARO involvement, and usefulness of the public record.
+      </p>
+    </header>
+
+    <section class="toolbar" aria-label="Filters">
+      <input id="searchBox" class="control" type="search" placeholder="Search title, agency, year, or highlight..." />
+
+      <select id="starFilter" class="control" aria-label="Filter by star ranking">
+        <option value="0">All star rankings</option>
+        <option value="5">5 stars only</option>
+        <option value="4">4 stars and up</option>
+        <option value="3">3 stars and up</option>
+        <option value="2">2 stars and up</option>
+      </select>
+
+      <select id="agencyFilter" class="control" aria-label="Filter by agency">
+        <option value="">All agencies</option>
+        <option value="department of war">Department of War</option>
+        <option value="aaro">AARO</option>
+        <option value="fbi">FBI</option>
+        <option value="nasa">NASA</option>
+        <option value="state">Department of State</option>
+        <option value="centcom">CENTCOM</option>
+        <option value="army">Army</option>
+      </select>
+
+      <button id="themeToggle" type="button">Light Mode</button>
+    </section>
+
+    <section class="summary-row">
+      <div class="summary-card"><span>Total Groups</span><strong id="visibleCount">12</strong></div>
+      <div class="summary-card"><span>Top Rating</span><strong>★★★★★</strong></div>
+      <div class="summary-card"><span>Primary Years</span><strong>1944–2026</strong></div>
+      <div class="summary-card"><span>Default Sort</span><strong>Official Weight</strong></div>
+    </section>
+
+    <section id="caseList" class="case-list"></section>
+
+    <p class="footer-note">
+      Star ratings are an editorial ranking of official weight, not proof of origin. Open the linked source files for the underlying records.
+    </p>
+  </main>
+
+  <script>
+    const records = [
+      {
+        rank: 1,
+        stars: 5,
+        title: "PURSUE Release 01 / Presidential + Secretary of War Release Authority",
+        years: "2026",
+        agency: "Department of War / ODNI / White House",
+        officialWeight: "Presidential directive, Secretary of War statement, ODNI coordination",
+        highlights: [
+          "Release framework for declassified unresolved UAP/UFO records.",
+          "Cleared for release on May 8, 2026.",
+          "Strongest official pedigree because it establishes the government-wide release authority."
+        ],
+        note: "This ranks the release authority itself, not a single sighting case.",
+        links: [
+          ["WAR.gov UFO / PURSUE Release 01", "https://www.war.gov/UFO/"],
+          ["DOW release announcement", "https://www.war.gov/News/Releases/Release/Article/4480582/department-of-war-releases-unidentified-anomalous-phenomena-files-in-historic-t/"]
+        ]
+      },
+      {
+        rank: 2,
+        stars: 5,
+        title: "Western U.S. Event / AARO Slide Deck",
+        years: "2023",
+        agency: "AARO / Federal law enforcement witnesses",
+        officialWeight: "Multiple federal law-enforcement special agents, multiple teams, AARO follow-up",
+        highlights: [
+          "Orange “mother” orbs reportedly launching smaller red orbs.",
+          "Large fiery orb estimated by AARO at roughly 12–18 meters.",
+          "Dark kite / transparent kite objects reportedly observed with NVGs and bare eye."
+        ],
+        note: "One of the strongest case files because it combines trained witnesses, AARO involvement, and multiple vantage points.",
+        links: [
+          ["western_us_event_slides_5.08.2026.pdf", "https://www.war.gov/medialink/ufo/release_1/western_us_event_slides_5.08.2026.pdf"]
+        ]
+      },
+      {
+        rank: 3,
+        stars: 5,
+        title: "USPER Redacted Witness Statement",
+        years: "2025",
+        agency: "Federal / State Partners / Intelligence Reference",
+        officialWeight: "References senior U.S. intelligence official, pilots, operations center, FLIR/NVG observation",
+        highlights: [
+          "Orb reportedly came within about 10 feet of a helicopter.",
+          "Object reportedly split into two objects.",
+          "Multiple orb formations and swarm-like lights later seen by pilots and witnesses."
+        ],
+        note: "Ranks high because of the witness chain and references to senior intelligence involvement.",
+        links: [
+          ["usper-statement-redacted.pdf", "https://www.war.gov/medialink/ufo/release_1/usper-statement-redacted.pdf"]
+        ]
+      },
+      {
+        rank: 4,
+        stars: 4,
+        title: "USCENTCOM / Syria Mission Report",
+        years: "2024",
+        agency: "USCENTCOM / U.S. Air Force",
+        officialWeight: "Combatant-command reporting chain, classified handling markings, declassification authority",
+        highlights: [
+          "Formal military mission-report style document.",
+          "Linked to sensor/platform data.",
+          "Heavily redacted but clearly processed through official military channels."
+        ],
+        note: "Strong legitimacy signal from command-chain handling, even with limited public detail.",
+        links: [
+          ["dow-uap-d32-mission-report-syria-october-2024.pdf", "https://www.war.gov/medialink/ufo/release_1/dow-uap-d32-mission-report%2C-syria-october-2024.pdf"]
+        ]
+      },
+      {
+        rank: 5,
+        stars: 4,
+        title: "INDOPACOM Unresolved UAP Videos",
+        years: "2023–2024",
+        agency: "INDOPACOM / AARO",
+        officialWeight: "Combatant-command reporting to AARO",
+        highlights: [
+          "Includes the reported football-shaped / ellipsoid object near Japan.",
+          "Official public video set referenced in the Release 01 collection.",
+          "Useful because video records can be compared against metadata and sensor context where available."
+        ],
+        note: "Ranks high because it comes through a combatant command, though the public record may be thinner than narrative reports.",
+        links: [
+          ["DOW-UAP-PR46 / INDOPACOM 2024", "https://www.war.gov/UFO/#DOW-UAP-PR46-Unresolved-UAP-Report-INDOPACOM-2024"],
+          ["DOW-UAP-PR47 / INDOPACOM 2023", "https://www.war.gov/UFO/#DOW-UAP-PR47-Unresolved-UAP-Report-INDOPACOM-2023"],
+          ["DOW-UAP-PR48 / INDOPACOM 2024", "https://www.war.gov/UFO/#DOW-UAP-PR48-Unresolved-UAP-Report-INDOPACOM-2024"]
+        ]
+      },
+      {
+        rank: 6,
+        stars: 4,
+        title: "Department of the Army UAP Video",
+        years: "2026",
+        agency: "Department of the Army / AARO",
+        officialWeight: "Army-submitted UAP report",
+        highlights: [
+          "Reported UAP video associated with North America in 2026.",
+          "Official military-origin item in Release 01.",
+          "Video-first artifact with less narrative depth than the top-ranked files."
+        ],
+        note: "Strong source, but not enough public context to outrank the detailed witness/report packages.",
+        links: [
+          ["DOW-UAP-PR49 / Department of the Army 2026", "https://www.war.gov/UFO/#DOW-UAP-PR49-Unresolved-UAP-Report-Department-of-the-Army-2026"]
+        ]
+      },
+      {
+        rank: 7,
+        stars: 3,
+        title: "NASA Astronaut Transcripts / Apollo, Gemini, Skylab Records",
+        years: "1965–1973",
+        agency: "NASA",
+        officialWeight: "Astronaut mission transcripts and debriefs",
+        highlights: [
+          "Includes Gemini 7, Apollo 11, Apollo 12, Apollo 17, and Skylab material.",
+          "Official NASA archival records involving trained astronaut observers.",
+          "Important historically, but not always formal UAP investigations."
+        ],
+        note: "Official and historically valuable, but lower case-specific evidentiary weight.",
+        links: [
+          ["Gemini 7 transcript — 1965", "https://www.war.gov/medialink/ufo/release_1/nasa-uap-d3-gemini-7-transcript-1965.pdf"],
+          ["Apollo 11 technical crew debrief — 1969", "https://www.war.gov/medialink/ufo/release_1/nasa-uap-d4-apollo-11-technical-crew-debriefing-1969.pdf"],
+          ["Apollo 12 transcript — 1969", "https://www.war.gov/medialink/ufo/release_1/nasa-uap-d1-apollo-12-transcript-1969.pdf"],
+          ["Apollo 17 transcript — 1972", "https://www.war.gov/medialink/ufo/release_1/nasa-uap-d2-apollo-17-transcript-1972.pdf"],
+          ["Apollo 17 science debrief — 1973", "https://www.war.gov/medialink/ufo/release_1/nasa-uap-d5-apollo-17-crew-debriefing-for-science-1973.pdf"],
+          ["Apollo 17 technical debrief — 1973", "https://www.war.gov/medialink/ufo/release_1/nasa-uap-d6-apollo-17-technical-crew-debriefing-1973.pdf"],
+          ["Skylab technical debrief — 1973", "https://www.war.gov/medialink/ufo/release_1/nasa-uap-d7-skylab-technical-crew-debriefing-1973.pdf"]
+        ]
+      },
+      {
+        rank: 8,
+        stars: 3,
+        title: "State Department Embassy Cables",
+        years: "1985, 1994",
+        agency: "Department of State",
+        officialWeight: "Diplomatic cable reporting",
+        highlights: [
+          "Includes Papua New Guinea and Kazakhstan diplomatic records.",
+          "Official diplomatic reporting, but usually not direct sensor or military evidence.",
+          "Useful for historical and international context."
+        ],
+        note: "Official, but less direct than military/AARO case records.",
+        links: [
+          ["Papua New Guinea cable — Jan. 1985", "https://www.war.gov/medialink/ufo/release_1/dos-uap-d1-cable-1-papua-new-guinea-january-1985.pdf"],
+          ["Kazakhstan cable — Jan. 1994", "https://www.war.gov/medialink/ufo/release_1/dos-uap-d2-cable-2-kazakhstan-january-1994.pdf"]
+        ]
+      },
+      {
+        rank: 9,
+        stars: 3,
+        title: "FBI Historical Case-File Material",
+        years: "Mostly 1947–1968",
+        agency: "FBI",
+        officialWeight: "Federal investigative records and case files",
+        highlights: [
+          "Includes FBI “Flying Discs” case-file sections.",
+          "Official records, but much of the value is archival/admin-heavy.",
+          "Good for historical traceability and government awareness over time."
+        ],
+        note: "Official federal records, but not necessarily the strongest anomaly evidence.",
+        links: [
+          ["65_hs1-834228961_62-hq-83894_section_1.pdf", "https://www.war.gov/medialink/ufo/release_1/65_hs1-834228961_62-hq-83894_section_1.pdf"],
+          ["65_hs1-834228961_62-hq-83894_section_8.pdf", "https://www.war.gov/medialink/ufo/release_1/65_hs1-834228961_62-hq-83894_section_8.pdf"],
+          ["65_hs1-101634279_100-de-18221_serial_844.pdf", "https://www.war.gov/medialink/ufo/release_1/65_hs1-101634279_100-de-18221_serial_844.pdf"],
+          ["65_hs1-101634279_100-de-26505.pdf", "https://www.war.gov/medialink/ufo/release_1/65_hs1-101634279_100-de-26505.pdf"]
+        ]
+      },
+      {
+        rank: 10,
+        stars: 3,
+        title: "DOW / CENTCOM / Air Force Mission and Range Fouler Reports",
+        years: "2020–2025",
+        agency: "Department of War / Air Force / CENTCOM",
+        officialWeight: "Military operational and range-fouler reporting",
+        highlights: [
+          "Covers Iraq, Syria, Greece, Arabian Gulf, Persian Gulf, Gulf of Aden, Strait of Hormuz, Djibouti, and other regions.",
+          "Operationally meaningful, but many reports are short or heavily redacted.",
+          "Useful as a pattern set across regions and years."
+        ],
+        note: "Official military source class, but individual file strength varies.",
+        links: [
+          ["Iraq — May 2022", "https://www.war.gov/medialink/ufo/release_1/dow-uap-d12-mission-report-iraq-may-2022.pdf"],
+          ["Syria — July 2022", "https://www.war.gov/medialink/ufo/release_1/dow-uap-d16-mission-report-syria-july-2022.pdf"],
+          ["Greece — Jan. 2024", "https://www.war.gov/medialink/ufo/release_1/dow-uap-d25-mission-report-greece-january-2024.pdf"],
+          ["Greece — Oct. 2023", "https://www.war.gov/medialink/ufo/release_1/dow-uap-d33-mission-report-greece-october-2023.pdf"],
+          ["Djibouti — 2025", "https://www.war.gov/medialink/ufo/release_1/dow-uap-d8-mission-report-djibouti-2025.pdf"]
+        ]
+      },
+      {
+        rank: 11,
+        stars: 2,
+        title: "Late-2025 FBI Photo Set",
+        years: "2025",
+        agency: "FBI",
+        officialWeight: "Official image/photo release set",
+        highlights: [
+          "Includes FBI A-series PNGs and B-series PDFs.",
+          "Visually interesting but often thin on surrounding case detail.",
+          "Best used as supporting evidence when paired with statements or metadata."
+        ],
+        note: "Official, but standalone imagery ranks below witnessed and documented case packages.",
+        links: [
+          ["fbi-photo-a1.png", "https://www.war.gov/medialink/ufo/release_1/fbi-photo-a1.png"],
+          ["fbi-photo-b1.pdf", "https://www.war.gov/medialink/ufo/release_1/fbi-photo-b1.pdf"],
+          ["fbi-photo-b24.pdf", "https://www.war.gov/medialink/ufo/release_1/fbi-photo-b24.pdf"]
+        ]
+      },
+      {
+        rank: 12,
+        stars: 2,
+        title: "Historical Air Force / Older Military Archive Files",
+        years: "1944–1963",
+        agency: "Air Force / Historical military records",
+        officialWeight: "Archival military records",
+        highlights: [
+          "Includes WWII-era records, intelligence collection/dissemination files, Flying Discs 1949, and incident summaries.",
+          "Historically important, especially for long-running institutional awareness.",
+          "Lower modern evidentiary weight because they are broad archival records."
+        ],
+        note: "Official and useful, but broad archive material ranks lower than modern operational cases.",
+        links: [
+          ["German armament/equipment documents — 1944–1945", "https://www.war.gov/medialink/ufo/release_1/331_120752_numeric_files_1944–1945_37153_german_armament_equipment_documents.pdf"],
+          ["Records relating to intelligence collection/dissemination — 1948–1955", "https://www.war.gov/medialink/ufo/release_1/341_110448_records_relating_to_the_collection_and_dissemination_of_intelligence_1948-1955-ts_cont_no.2_2-5300-2-5399.pdf"],
+          ["Flying Discs — 1949", "https://www.war.gov/medialink/ufo/release_1/342_hs1-416511228_box186_319.1-flying-discs-1949.pdf"],
+          ["Incident summaries 1–100", "https://www.war.gov/medialink/ufo/release_1/38_143685_box7_incident_summaries_1-100.pdf"],
+          ["Incident summaries 101–172", "https://www.war.gov/medialink/ufo/release_1/38_143685_box7_incident_summaries_101-172.pdf"],
+          ["Incident summaries 173–233", "https://www.war.gov/medialink/ufo/release_1/38_143685_box7_incident_summaries_173-233.pdf"]
+        ]
+      }
+    ];
+
+    const html = document.documentElement;
+    const caseList = document.getElementById("caseList");
+    const themeToggle = document.getElementById("themeToggle");
+    const starFilter = document.getElementById("starFilter");
+    const agencyFilter = document.getElementById("agencyFilter");
+    const searchBox = document.getElementById("searchBox");
+    const visibleCount = document.getElementById("visibleCount");
+
+    function escapeHtml(value) {
+      return String(value)
+        .replaceAll("&", "&amp;")
+        .replaceAll("<", "&lt;")
+        .replaceAll(">", "&gt;")
+        .replaceAll('"', "&quot;")
+        .replaceAll("'", "&#039;");
+    }
+
+    function starText(count) {
+      return "★".repeat(count) + "☆".repeat(5 - count);
+    }
+
+    function renderCards() {
+      caseList.innerHTML = records.map(record => {
+        const searchText = [
+          record.title,
+          record.years,
+          record.agency,
+          record.officialWeight,
+          record.note,
+          ...record.highlights
+        ].join(" ").toLowerCase();
+
+        const highlights = record.highlights
+          .map(item => `<li>${escapeHtml(item)}</li>`)
+          .join("");
+
+        const links = record.links
+          .map(([label, url]) => `
+            <a class="doc-link" href="${escapeHtml(url)}" target="_blank" rel="noopener noreferrer">
+              ${escapeHtml(label)}
+            </a>
+          `)
+          .join("");
+
+        return `
+          <article
+            class="case-card"
+            data-stars="${record.stars}"
+            data-rank="${record.rank}"
+            data-agency="${escapeHtml(record.agency.toLowerCase())}"
+            data-search="${escapeHtml(searchText)}"
+          >
+            <div class="case-topline">
+              <div>
+                <span class="eyebrow">Rank #${record.rank} · ${escapeHtml(record.years)}</span>
+                <h2>${escapeHtml(record.title)}</h2>
+              </div>
+
+              <div class="rating" aria-label="${record.stars} out of 5 stars">
+                <span class="stars">${starText(record.stars)}</span>
+                <span class="rating-label">${record.stars}/5</span>
+              </div>
+            </div>
+
+            <div class="meta-grid">
+              <div>
+                <span>Agency</span>
+                <strong>${escapeHtml(record.agency)}</strong>
+              </div>
+              <div>
+                <span>Official Weight</span>
+                <strong>${escapeHtml(record.officialWeight)}</strong>
+              </div>
+            </div>
+
+            <h3>Highlights</h3>
+            <ul>${highlights}</ul>
+
+            <p class="note">${escapeHtml(record.note)}</p>
+
+            <div class="links">${links}</div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    function setTheme(theme) {
+      html.dataset.theme = theme;
+      themeToggle.textContent = theme === "dark" ? "Light Mode" : "Dark Mode";
+      localStorage.setItem("uapBriefTheme", theme);
+    }
+
+    function applyFilters() {
+      const minStars = Number(starFilter.value || 0);
+      const agency = agencyFilter.value.toLowerCase();
+      const search = searchBox.value.trim().toLowerCase();
+      const cards = Array.from(document.querySelectorAll(".case-card"));
+
+      let count = 0;
+
+      cards.forEach(card => {
+        const stars = Number(card.dataset.stars);
+        const agencyText = card.dataset.agency;
+        const searchText = card.dataset.search;
+
+        const show =
+          stars >= minStars &&
+          (!agency || agencyText.includes(agency)) &&
+          (!search || searchText.includes(search));
+
+        card.classList.toggle("hidden", !show);
+
+        if (show) {
+          count++;
+        }
+      });
+
+      visibleCount.textContent = count;
+    }
+
+    themeToggle.addEventListener("click", () => {
+      setTheme(html.dataset.theme === "dark" ? "light" : "dark");
+    });
+
+    starFilter.addEventListener("change", applyFilters);
+    agencyFilter.addEventListener("change", applyFilters);
+    searchBox.addEventListener("input", applyFilters);
+
+    renderCards();
+    setTheme(localStorage.getItem("uapBriefTheme") || "dark");
+    applyFilters();
+  </script>
+</body>
+</html>
