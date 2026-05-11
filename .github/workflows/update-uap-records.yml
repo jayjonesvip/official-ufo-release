@@ -34,6 +34,4 @@ jobs:
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
           commit_message: "Update UAP Release 01 records and media"
-          file_pattern: |
-            data/release-01-records.json
-            media/**
+          file_pattern: data/release-01-records.json media/**
