@@ -32,14 +32,6 @@ Open the HTML file directly in a browser.
 
 No build tools, server, npm packages, or framework are required.
 
-## Suggested GitHub Pages Setup
-
-1. Upload `ufo_release_01_ranked_brief.html` to this repository.
-2. Rename it to `index.html`.
-3. Go to repository **Settings**.
-4. Open **Pages**.
-5. Set the source to your main branch.
-6. Save the settings.
 
 After GitHub Pages publishes, the brief can be viewed as a simple public webpage.
 
