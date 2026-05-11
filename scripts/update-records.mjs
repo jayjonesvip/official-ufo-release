@@ -38,7 +38,7 @@ async function readExistingRecords() {
   }
 }
 
-async function downloadFile(url, outputPath) {
+async function downloadImage(url, outputPath) {
   try {
     await fs.mkdir(path.dirname(outputPath), { recursive: true });
 
@@ -47,7 +47,13 @@ async function downloadFile(url, outputPath) {
       return outputPath;
     }
 
-    const response = await fetch(url);
+    const response = await fetch(url, {
+      headers: {
+        "User-Agent":
+          "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 Chrome/120 Safari/537.36",
+        "Referer": SOURCE_URL
+      }
+    });
 
     if (!response.ok) {
       throw new Error(`Failed to download ${url}: HTTP ${response.status}`);
@@ -56,26 +62,25 @@ async function downloadFile(url, outputPath) {
     const buffer = Buffer.from(await response.arrayBuffer());
     await fs.writeFile(outputPath, buffer);
 
+    const written = await fs.stat(outputPath);
+
+    if (written.size > 10 * 1024 * 1024) {
+      console.warn(`Skipping local image over 10MB: ${outputPath}`);
+      await fs.rm(outputPath, { force: true });
+      return null;
+    }
+
     return outputPath;
   } catch (err) {
-    console.warn(`Skipping download: ${url}`);
+    console.warn(`Skipping image download: ${url}`);
     console.warn(err.message);
     return null;
   }
 }
 
-function getMediaPath(url) {
+function getImagePath(url) {
   const fileName = decodeURIComponent(url.split("/").pop().split("?")[0]);
-
-  if (fileName.match(/\.pdf$/i)) {
-    return path.join("media", "pdf", fileName);
-  }
-
-  if (fileName.match(/\.(png|jpg|jpeg)$/i)) {
-    return path.join("media", "images", fileName);
-  }
-
-  return path.join("media", "other", fileName);
+  return path.join("media", "images", fileName);
 }
 
 function cleanTitleFromUrl(url) {
@@ -286,6 +291,30 @@ async function clickThroughPagination(page) {
   return Array.from(allLinks);
 }
 
+async function removePdfLocalPaths(records) {
+  for (const record of records) {
+    if (record.localPath && record.localPath.toLowerCase().startsWith("media/pdf/")) {
+      delete record.localPath;
+    }
+  }
+}
+
+async function downloadImagesForRecords(records) {
+  for (const record of records) {
+    if (!record.url) continue;
+
+    if (record.url.match(/\.(png|jpg|jpeg)(\?|$)/i)) {
+      const localPath = getImagePath(record.url);
+      const downloaded = await downloadImage(record.url, localPath);
+
+      if (downloaded) {
+        record.localPath = downloaded.replaceAll("\\", "/");
+        console.log(`Downloaded image: ${record.localPath}`);
+      }
+    }
+  }
+}
+
 async function main() {
   const existingRecords = await readExistingRecords();
 
@@ -343,17 +372,6 @@ async function main() {
           }
         : inferRecord(url);
 
-      // Download PDFs and images only. Keep videos as links.
-      if (record.url.match(/\.(pdf|png|jpg|jpeg)(\?|$)/i)) {
-        const localPath = getMediaPath(record.url);
-        const downloaded = await downloadFile(record.url, localPath);
-
-        if (downloaded) {
-          record.localPath = downloaded.replaceAll("\\", "/");
-          console.log(`Downloaded: ${record.localPath}`);
-        }
-      }
-
       recordsMap.set(record.url, {
         ...recordsMap.get(record.url),
         ...record
@@ -361,21 +379,12 @@ async function main() {
     }
   }
 
-  for (const record of recordsMap.values()) {
-  if (!record.url) continue;
-
-  // Download PDFs and images only. Keep videos as links.
-  if (record.url.match(/\.(pdf|png|jpg|jpeg)(\?|$)/i)) {
-    const localPath = getMediaPath(record.url);
-    const downloaded = await downloadFile(record.url, localPath);
-
-    if (downloaded) {
-      record.localPath = downloaded.replaceAll("\\", "/");
-      console.log(`Downloaded: ${record.localPath}`);
-    }
+  for (const record of EXTRA_VIDEO_RECORDS) {
+    recordsMap.set(record.url, {
+      ...recordsMap.get(record.url),
+      ...record
+    });
   }
-}
-  
 
   const records = Array.from(recordsMap.values()).sort(
     (a, b) =>
@@ -384,15 +393,21 @@ async function main() {
       String(a.title).localeCompare(String(b.title))
   );
 
+  await removePdfLocalPaths(records);
+  await downloadImagesForRecords(records);
+
   const mediaBackedRecords = records.filter(r => r.localPath).length;
 
   console.log(`Built records: ${records.length}`);
-  console.log(`Media-backed records: ${mediaBackedRecords}`);
+  console.log(`Image-backed records: ${mediaBackedRecords}`);
 
   if (existingRecords.length > 0 && records.length < existingRecords.length) {
     console.warn(
       `Scrape built ${records.length} records, which is less than existing ${existingRecords.length}. Keeping existing data.`
     );
+
+    await removePdfLocalPaths(existingRecords);
+    await downloadImagesForRecords(existingRecords);
 
     const payload = {
       generatedAt: new Date().toISOString(),
