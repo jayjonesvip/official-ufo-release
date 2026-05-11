@@ -39,11 +39,21 @@ jobs:
           echo "Git status:"
           git status --short
 
-      - name: Commit changes
-        uses: stefanzweifel/git-auto-commit-action@v5
-        with:
-          commit_message: "Update UAP Release 01 records and media"
-          file_pattern: |
-            data/release-01-records.json
-            media/pdf/**
-            media/images/**
+      - name: Commit records and media
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+
+          git add data/release-01-records.json
+          git add media/pdf
+          git add media/images
+
+          echo "Staged files:"
+          git status --short
+
+          if git diff --cached --quiet; then
+            echo "No changes to commit."
+          else
+            git commit -m "Update UAP Release 01 records and media"
+            git push
+          fi
